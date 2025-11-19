@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard • SecureScanX</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #a855f7 35%, #55a3ff 70%, #00c9a7 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 12s ease infinite;
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #ffffff !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-info {
+            color: #e0f7fa;
+            font-weight: 500;
+        }
+
+        .nav-link {
+            color: #a0f7e0 !important;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: #ffffff !important;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .btn-action {
+            background: linear-gradient(45deg, #00c9a7, #55a3ff);
+            border: none;
+            border-radius: 12px;
+            padding: 0.6rem 1.2rem;
+            font-weight: 600;
+            transition: all 0.4s ease;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 201, 167, 0.4);
+        }
+
+        .list-group-item {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .list-group-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .badge {
+            font-size: 0.8rem;
+            padding: 0.4em 0.8em;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            color: white;
+        }
+
+        .form-control,
+        .form-select {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 10px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: #00c9a7;
+            box-shadow: 0 0 0 0.2rem rgba(0, 201, 167, 0.25);
+            color: white;
+        }
+
+        .form-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        .btn-close {
+            filter: invert(1);
+        }
+
+        .text-muted-light {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        /* Notification Dropdown Styling */
+        .dropdown-menu {
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            position: absolute !important;
+            z-index: 9999 !important;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-header {
+            background: rgba(106, 17, 203, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            color: #333;
+            font-weight: 600;
+            padding: 0.75rem 1rem;
+        }
+
+        #notificationList .list-group-item {
+            background: white;
+            border: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            color: #333;
+            transition: background 0.2s ease;
+        }
+
+        #notificationList .list-group-item:hover {
+            background: rgba(106, 17, 203, 0.05);
+            transform: none;
+        }
+
+        .mark-read {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        #notificationBadge {
+            font-size: 0.65rem;
+            padding: 0.25em 0.4em;
+        }
+
+        .notification-icon {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .notification-icon:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-shield-alt me-2"></i> SecureScanX
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="nav-info me-3">
+                    <i class="fas fa-building me-1"></i> {{ session.company }}
+                </span>
+                <span class="nav-info me-3">
+                    <i class="fas fa-user me-1"></i> {{ session.username }}
+                </span>
+                <!-- Notification Bell -->
+                <div class="dropdown me-3">
+                    <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-bell fa-lg"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificationBadge" style="display: none;">
+                            0
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end p-0" aria-labelledby="notificationDropdown" style="width: 350px; max-height: 400px; overflow-y: auto;">
+                        <div class="dropdown-header d-flex justify-content-between align-items-center">
+                            <span>Notifications</span>
+                            <button class="btn btn-sm btn-link text-decoration-none" id="markAllRead" style="font-size: 0.75rem;">Mark all as read</button>
+                        </div>
+                        <div id="notificationList" class="list-group list-group-flush">
+                            <div class="text-center py-3 text-muted">
+                                <i class="fas fa-inbox fa-2x mb-2"></i>
+                                <p class="mb-0">No new notifications</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ url_for('user.logout') }}" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'danger' if category == 'danger' else 'success' }} alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <h2 class="mb-4 text-white">Welcome, {{ session.username }}!</h2>
+
+        <!-- Action Cards -->
+        <div class="row g-4 mb-5">
+            <!-- Add User -->
+            <div class="col-md-3">
+                <div class="card h-100 text-center p-4">
+                    <div class="card-body d-flex flex-column justify-content-center">
+                        <i class="fas fa-user-plus fa-3x mb-3 text-info"></i>
+                        <h5 class="card-title">Add New Employee</h5>
+                        <p class="text-muted-light">Register a new user</p>
+                        <button class="btn btn-action text-white mt-auto" data-bs-toggle="modal"
+                            data-bs-target="#addUserModal">
+                            Add User
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manage Users -->
+            <div class="col-md-3">
+                <div class="card h-100 text-center p-4">
+                    <div class="card-body d-flex flex-column justify-content-center">
+                        <i class="fas fa-users-cog fa-3x mb-3 text-warning"></i>
+                        <h5 class="card-title">Manage Employees</h5>
+                        <p class="text-muted-light">View and manage users</p>
+                        <a href="{{ url_for('user.manage_users') }}" class="btn btn-action text-white mt-auto">
+                            Manage Users
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Scan -->
+            <div class="col-md-3">
+                <div class="card h-100 text-center p-4">
+                    <div class="card-body d-flex flex-column justify-content-center">
+                        <i class="fas fa-search-plus fa-3x mb-3 text-success"></i>
+                        <h5 class="card-title">Start New Scan</h5>
+                        <p class="text-muted-light">Scan a target URL</p>
+                        <a href="{{ url_for('start_scan') }}" class="btn btn-action text-white mt-auto">
+                            New Scan
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real-Time Scan -->
+            <div class="col-md-3">
+                <div class="card h-100 text-center p-4">
+                    <div class="card-body d-flex flex-column justify-content-center">
+                        <i class="fas fa-clock fa-3x mb-3 text-primary"></i>
+                        <h5 class="card-title">Real-Time Scan</h5>
+                        <p class="text-muted-light">Automated recurring scans</p>
+                        <a href="{{ url_for('scheduled_scans') }}" class="btn btn-action text-white mt-auto">
+                            Manage Schedules
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Charts Row -->
+        <div class="row g-4 mb-4">
+            <!-- Vulnerability Overview -->
+            <div class="col-lg-4">
+                <div class="card p-4 h-100">
+                    <h5 class="mb-3">
+                        <i class="fas fa-chart-pie me-2"></i> Vulnerability Overview
+                    </h5>
+                    <canvas id="severityChart"></canvas>
+                    <div class="text-center mt-3">
+                        <small class="text-muted-light">Total: {{ severity_stats.critical + severity_stats.high + severity_stats.medium + severity_stats.low + severity_stats.info }} findings</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scan Mode Distribution -->
+            <div class="col-lg-4">
+                <div class="card p-4 h-100">
+                    <h5 class="mb-3">
+                        <i class="fas fa-chart-bar me-2"></i> Scan Modes Used
+                    </h5>
+                    <canvas id="modeChart"></canvas>
+                    <div class="text-center mt-3">
+                        <small class="text-muted-light">Total: {{ total_scans }} scans</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scan Trend (Last 7 Days) -->
+            <div class="col-lg-4">
+                <div class="card p-4 h-100">
+                    <h5 class="mb-3">
+                        <i class="fas fa-chart-line me-2"></i> Scan Activity (7 Days)
+                    </h5>
+                    <canvas id="trendChart"></canvas>
+                    <div class="text-center mt-3">
+                        <small class="text-muted-light">Recent activity</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Scans -->
+        <div class="card p-4">
+            <h4 class="mb-3">
+                <i class="fas fa-history me-2"></i> Recent Scans
+            </h4>
+            {% if history %}
+            <div class="list-group">
+                {% for scan in history %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ scan.url }}</strong><br>
+                        <small class="text-muted-light">{{ scan.timestamp }}</small>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <!-- VIEW -->
+                        <a href="{{ url_for('scan_detail', scan_id=scan.scan_key) }}"
+                            class="btn btn-sm btn-outline-light">
+                            View
+                        </a>
+
+                        <!-- DELETE -->
+                        <form method="post" action="{{ url_for('delete_scan', scan_id=scan.scan_key) }}"
+                            onsubmit="return confirm('Delete this scan permanently?');" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted-light text-center">No scans yet. <a href="{{ url_for('start_scan') }}"
+                    class="text-link">Start your first scan!</a></p>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">
+                        <i class="fas fa-user-plus me-2"></i> Add New Employee
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="post" action="{{ url_for('user.add_user') }}">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text" name="username" class="form-control" placeholder="john_doe" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" placeholder="john@company.com"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-action text-white">Add Employee</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Severity Distribution Chart (Doughnut)
+            const severityCtx = document.getElementById('severityChart');
+            if (severityCtx) {
+                const totalSeverity = {{ severity_stats.critical }} + {{ severity_stats.high }} + {{ severity_stats.medium }} + {{ severity_stats.low }} + {{ severity_stats.info }};
+
+                if (totalSeverity > 0) {
+                    new Chart(severityCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Critical', 'High', 'Medium', 'Low', 'Info'],
+                            datasets: [{
+                                data: [
+                                    {{ severity_stats.critical }},
+                                    {{ severity_stats.high }},
+                                    {{ severity_stats.medium }},
+                                    {{ severity_stats.low }},
+                                    {{ severity_stats.info }}
+                                ],
+                                backgroundColor: ['#ff0844', '#ff6b6b', '#feca57', '#48dbfb', '#17a2b8'],
+                                borderWidth: 2,
+                                borderColor: 'rgba(255,255,255,0.2)'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                legend: { position: 'bottom', labels: { color: 'white', padding: 10, font: { size: 11 } } },
+                                tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleColor: '#fff', bodyColor: '#ddd' }
+                            }
+                        }
+                    });
+                } else {
+                    const ctx = severityCtx.getContext('2d');
+                    ctx.font = '16px Poppins';
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('No vulnerabilities found yet', severityCtx.width / 2, severityCtx.height / 2);
+                }
+            }
+
+            // Scan Mode Distribution (Bar)
+            const modeCtx = document.getElementById('modeChart');
+            if (modeCtx) {
+                const modeData = {{ mode_stats|tojson }};
+                console.log('Mode data:', modeData); // Debug logging
+
+                if (modeData && modeData.length > 0) {
+                    const modeLabels = modeData.map(m => (m.mode || 'unknown').charAt(0).toUpperCase() + (m.mode || 'unknown').slice(1));
+                    const modeCounts = modeData.map(m => m.count);
+
+                    new Chart(modeCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: modeLabels,
+                            datasets: [{
+                                label: 'Scans',
+                                data: modeCounts,
+                                backgroundColor: ['rgba(106, 17, 203, 0.7)', 'rgba(255, 163, 77, 0.7)', 'rgba(0, 201, 167, 0.7)'],
+                                borderColor: ['#6a11cb', '#ffa34d', '#00c9a7'],
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            scales: {
+                                y: { beginAtZero: true, ticks: { color: 'white', stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                                x: { ticks: { color: 'white' }, grid: { display: false } }
+                            },
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: { backgroundColor: 'rgba(0,0,0,0.8)' }
+                            }
+                        }
+                    });
+                } else {
+                    const ctx = modeCtx.getContext('2d');
+                    ctx.font = '16px Poppins';
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('No scan data available', modeCtx.width / 2, modeCtx.height / 2);
+                }
+            }
+
+            // Scan Trend (Last 7 Days) - Line Chart
+            const trendCtx = document.getElementById('trendChart');
+            if (trendCtx) {
+                const trendData = {{ trend_stats|tojson }};
+
+                if (trendData && trendData.length > 0) {
+                    const trendLabels = trendData.map(t => {
+                        const date = new Date(t.date);
+                        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    });
+                    const trendCounts = trendData.map(t => t.count);
+
+                    new Chart(trendCtx, {
+                        type: 'line',
+                        data: {
+                            labels: trendLabels,
+                            datasets: [{
+                                label: 'Scans',
+                                data: trendCounts,
+                                fill: true,
+                                backgroundColor: 'rgba(85, 163, 255, 0.2)',
+                                borderColor: '#55a3ff',
+                                borderWidth: 3,
+                                tension: 0.4,
+                                pointBackgroundColor: '#55a3ff',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 5
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            scales: {
+                                y: { beginAtZero: true, ticks: { color: 'white', stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                                x: { ticks: { color: 'white', maxRotation: 45, minRotation: 0 }, grid: { display: false } }
+                            },
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: { backgroundColor: 'rgba(0,0,0,0.8)' }
+                            }
+                        }
+                    });
+                } else {
+                    const ctx = trendCtx.getContext('2d');
+                    ctx.font = '16px Poppins';
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('No recent activity', trendCtx.width / 2, trendCtx.height / 2);
+                }
+            }
+
+            // Notification System
+            function loadNotifications() {
+                fetch('/api/notifications')
+                    .then(response => response.json())
+                    .then(data => {
+                        const notificationList = document.getElementById('notificationList');
+                        const notificationBadge = document.getElementById('notificationBadge');
+
+                        if (data.count > 0) {
+                            notificationBadge.textContent = data.count;
+                            notificationBadge.style.display = 'inline-block';
+
+                            notificationList.innerHTML = '';
+                            data.notifications.forEach(notif => {
+                                const notifElement = document.createElement('a');
+                                notifElement.href = `/detail/${notif.scan_id}`;
+                                notifElement.className = 'list-group-item list-group-item-action';
+                                notifElement.innerHTML = `
+                                    <div class="d-flex w-100 justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1" style="color: #333;">
+                                                ${notif.has_differences ? '<i class="fas fa-exclamation-triangle text-warning me-1"></i>' : '<i class="fas fa-check-circle text-success me-1"></i>'}
+                                                Scheduled Scan Complete
+                                            </h6>
+                                            <p class="mb-1 small" style="color: #666;">${notif.message}</p>
+                                            <small class="text-muted">${new Date(notif.timestamp).toLocaleString()}</small>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-secondary mark-read" data-id="${notif.id}" onclick="markAsRead(event, ${notif.id})">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </div>
+                                `;
+                                notificationList.appendChild(notifElement);
+                            });
+                        } else {
+                            notificationBadge.style.display = 'none';
+                            notificationList.innerHTML = `
+                                <div class="text-center py-3 text-muted">
+                                    <i class="fas fa-inbox fa-2x mb-2"></i>
+                                    <p class="mb-0">No new notifications</p>
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading notifications:', error);
+                    });
+            }
+
+            function markAsRead(event, notificationId) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                fetch(`/api/notifications/${notificationId}/read`, {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadNotifications();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error marking notification as read:', error);
+                });
+            }
+
+            document.getElementById('markAllRead').addEventListener('click', function() {
+                fetch('/api/notifications/mark-all-read', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadNotifications();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error marking all notifications as read:', error);
+                });
+            });
+
+            // Load notifications on page load
+            loadNotifications();
+
+            // Poll for new notifications every 30 seconds
+            setInterval(loadNotifications, 30000);
+        });
+    </script>
+</body>
+
+</html>

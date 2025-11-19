@@ -1,0 +1,1 @@
+command for run zap: java -Xmx512m -jar "C:\Program Files\ZAP\Zed Attack Proxy\zap-2.16.1.jar" -daemon -host 127.0.0.1 -port 8080

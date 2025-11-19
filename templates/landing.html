@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SecureScanX • Advanced Web Vulnerability Scanner</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #6a11cb 0%, #a855f7 35%, #55a3ff 70%, #00c9a7 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 12s ease infinite;
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Navbar */
+    .navbar {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 1rem 0;
+    }
+
+    .navbar-brand {
+      font-weight: 800;
+      font-size: 1.8rem;
+      color: white !important;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-link {
+      color: rgba(255, 255, 255, 0.9) !important;
+      font-weight: 500;
+      margin: 0 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: #00c9a7 !important;
+      transform: translateY(-2px);
+    }
+
+    .btn-login {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      color: white;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-login:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(255, 255, 255, 0.2);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 100px 0;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 4rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      animation: fadeInUp 1s ease;
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      margin-bottom: 2rem;
+      opacity: 0.95;
+      animation: fadeInUp 1.2s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .btn-primary-custom {
+      background: linear-gradient(45deg, #00c9a7, #55a3ff);
+      border: none;
+      padding: 1rem 3rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border-radius: 50px;
+      box-shadow: 0 10px 40px rgba(0, 201, 167, 0.4);
+      transition: all 0.4s ease;
+      animation: fadeInUp 1.4s ease;
+    }
+
+    .btn-primary-custom:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 50px rgba(0, 201, 167, 0.6);
+    }
+
+    /* Features Section */
+    .features {
+      padding: 80px 0;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 3rem;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      transition: all 0.4s ease;
+      height: 100%;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .feature-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(45deg, #00c9a7, #55a3ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .feature-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .feature-text {
+      font-size: 1rem;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    /* Scan Modes Section */
+    .scan-modes {
+      padding: 80px 0;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .mode-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .mode-card:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.05);
+    }
+
+    .mode-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 3rem 0;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.2);
+      margin-top: 5rem;
+    }
+
+    .footer p {
+      margin: 0;
+      opacity: 0.8;
+    }
+
+    /* Stats Section */
+    .stats {
+      padding: 60px 0;
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-box {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .stat-number {
+      font-size: 3.5rem;
+      font-weight: 800;
+      background: linear-gradient(45deg, #00c9a7, #55a3ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <i class="fas fa-shield-alt me-2"></i> SecureScanX
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item">
+            <a class="nav-link" href="#features">Features</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#scan-modes">Scan Modes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#about">About</a>
+          </li>
+          <li class="nav-item ms-3">
+            <a href="{{ url_for('user.login') }}" class="btn btn-login">
+              <i class="fas fa-sign-in-alt me-2"></i> Login
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>
+        <i class="fas fa-shield-virus me-3"></i><br>
+        SecureScanX
+      </h1>
+      <p class="lead">
+        Advanced Web Application Security Scanner<br>
+        Powered by OWASP ZAP & Nuclei
+      </p>
+      <a href="{{ url_for('user.register') }}" class="btn btn-primary-custom text-white">
+        Get Started Free <i class="fas fa-arrow-right ms-2"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="stat-box">
+            <div class="stat-number">
+              <i class="fas fa-search-plus"></i> 3
+            </div>
+            <div class="stat-label">Scan Modes</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stat-box">
+            <div class="stat-number">
+              <i class="fas fa-bug"></i> 1000+
+            </div>
+            <div class="stat-label">Vulnerability Templates</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stat-box">
+            <div class="stat-number">
+              <i class="fas fa-shield-alt"></i> 100%
+            </div>
+            <div class="stat-label">Secure & Private</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="features">
+    <div class="container">
+      <h2 class="section-title">
+        <i class="fas fa-star me-2"></i> Powerful Features
+      </h2>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="feature-card text-center">
+            <div class="feature-icon">
+              <i class="fas fa-spider"></i>
+            </div>
+            <h3 class="feature-title">OWASP ZAP Integration</h3>
+            <p class="feature-text">
+              Industry-leading security testing with automated spider and active scanning capabilities to detect vulnerabilities in web applications.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card text-center">
+            <div class="feature-icon">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <h3 class="feature-title">Nuclei Templates</h3>
+            <p class="feature-text">
+              Fast and customizable scanning with 1000+ community-driven templates for CVEs, misconfigurations, and security exposures.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card text-center">
+            <div class="feature-icon">
+              <i class="fas fa-chart-pie"></i>
+            </div>
+            <h3 class="feature-title">Detailed Reports</h3>
+            <p class="feature-text">
+              Comprehensive PDF reports with visual charts, severity breakdowns, and actionable insights for remediation.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="feature-card text-center">
+            <div class="feature-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <h3 class="feature-title">Scheduled Scanning</h3>
+            <p class="feature-text">
+              Automated recurring scans to continuously monitor your web applications and get alerted to new vulnerabilities.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card text-center">
+            <div class="feature-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <h3 class="feature-title">Team Management</h3>
+            <p class="feature-text">
+              Multi-user support with role-based access control. Admins can manage employees and share scan results.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card text-center">
+            <div class="feature-icon">
+              <i class="fas fa-lock"></i>
+            </div>
+            <h3 class="feature-title">2FA Security</h3>
+            <p class="feature-text">
+              Enhanced security with Two-Factor Authentication using Google Authenticator for admin accounts.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scan Modes Section -->
+  <section class="scan-modes" id="scan-modes">
+    <div class="container">
+      <h2 class="section-title">
+        <i class="fas fa-cogs me-2"></i> Flexible Scan Modes
+      </h2>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="mode-card text-center">
+            <div class="mode-icon text-info">
+              <i class="fas fa-spider"></i>
+            </div>
+            <h4 class="feature-title">Normal Mode</h4>
+            <p class="feature-text">
+              Comprehensive ZAP spider and active scan. Perfect for web applications with forms, authentication, and complex workflows.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="mode-card text-center">
+            <div class="mode-icon text-warning">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <h4 class="feature-title">API Mode</h4>
+            <p class="feature-text">
+              Fast Nuclei template scanning with focus on CVEs, exposures, and misconfigurations. Ideal for quick security checks.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="mode-card text-center">
+            <div class="mode-icon text-success">
+              <i class="fas fa-layer-group"></i>
+            </div>
+            <h4 class="feature-title">Deep Mode</h4>
+            <p class="feature-text">
+              Combined ZAP + Nuclei on all discovered URLs. Maximum coverage for thorough security assessments of large applications.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="features" id="about">
+    <div class="container">
+      <h2 class="section-title">
+        <i class="fas fa-info-circle me-2"></i> About SecureScanX
+      </h2>
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="feature-card">
+            <p class="feature-text text-center" style="font-size: 1.1rem;">
+              SecureScanX is a professional-grade web application security scanner that combines the power of
+              <strong>OWASP ZAP</strong> and <strong>Nuclei</strong> to provide comprehensive vulnerability assessments.
+              Our platform helps security professionals, developers, and organizations identify and remediate
+              security vulnerabilities before they can be exploited.
+            </p>
+            <hr class="border-light opacity-25 my-4">
+            <div class="row text-center">
+              <div class="col-md-6">
+                <h5 class="feature-title">
+                  <i class="fas fa-check-circle text-success me-2"></i> Enterprise Ready
+                </h5>
+                <p class="feature-text">Built for teams with multi-user support and scheduled scanning</p>
+              </div>
+              <div class="col-md-6">
+                <h5 class="feature-title">
+                  <i class="fas fa-check-circle text-success me-2"></i> Easy to Use
+                </h5>
+                <p class="feature-text">Intuitive interface with detailed reports and visual analytics</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2025 SecureScanX. All rights reserved.</p>
+      <p class="mt-2">
+        <a href="{{ url_for('user.login') }}" class="text-decoration-none" style="color: #00c9a7;">
+          <i class="fas fa-sign-in-alt me-1"></i> Login
+        </a>
+        <span class="mx-3">|</span>
+        <a href="{{ url_for('user.register') }}" class="text-decoration-none" style="color: #00c9a7;">
+          <i class="fas fa-user-plus me-1"></i> Register
+        </a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

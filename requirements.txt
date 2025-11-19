@@ -1,0 +1,8 @@
+Flask==3.0.0
+Werkzeug==3.0.1
+requests==2.31.0
+reportlab==4.0.7
+pyotp==2.9.0
+qrcode[pil]==7.4.2
+Pillow==12.0.0
+google-generativeai>=0.8.0

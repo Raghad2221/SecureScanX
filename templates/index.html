@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SecureScanX • Launch Scan</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+    body {
+      background: linear-gradient(135deg, #6a11cb 0%, #a855f7 35%, #55a3ff 70%, #00c9a7 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 12s ease infinite;
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      padding: 2rem 1rem;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      max-width: 1100px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card-header {
+      background: rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 1.5rem 2rem;
+    }
+
+    .card-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .badge-purple {
+      background: rgba(168, 85, 247, 0.3);
+      color: #e0c3fc;
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      font-size: 0.75rem;
+      padding: 0.35em 0.8em;
+      border-radius: 50px;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-control, .form-select {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      border-radius: 14px;
+      padding: 0.75rem 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: #00c9a7;
+      box-shadow: 0 0 0 0.2rem rgba(0, 201, 167, 0.3);
+      color: white;
+    }
+
+    .form-control::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .input-group-text {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: rgba(255, 255, 255, 0.8);
+      border-radius: 14px 0 0 14px;
+    }
+
+    .mode-card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .mode-card:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-3px);
+    }
+
+    .mode-card input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .mode-card input[type="radio"]:checked + .mode-content {
+      background: rgba(0, 201, 167, 0.2);
+      border: 1px solid #00c9a7;
+    }
+
+    .mode-content {
+      padding: 0.5rem;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-scan {
+      background: linear-gradient(45deg, #00c9a7, #55a3ff);
+      border: none;
+      border-radius: 14px;
+      padding: 0.8rem 2rem;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.4s ease;
+      box-shadow: 0 6px 20px rgba(0, 201, 167, 0.3);
+    }
+
+    .btn-scan:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 201, 167, 0.4);
+    }
+
+    .btn-back {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 14px;
+      padding: 0.8rem 1.5rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .tip-box {
+      background: rgba(255, 255, 255, 0.1);
+      border-left: 4px solid #00c9a7;
+      padding: 1rem;
+      border-radius: 0 12px 12px 0;
+      font-size: 0.9rem;
+    }
+
+    .text-link {
+      color: #a0f7e0;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .text-link:hover {
+      color: white;
+      text-decoration: underline;
+    }
+
+    .navbar {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container-fluid">
+
+    <!-- FIXED HERE -->
+    <a class="navbar-brand fw-bold" href="{{ url_for('dashboard') }}">
+      <i class="fas fa-shield-alt me-2"></i> SecureScanX
+    </a>
+
+    <div class="d-flex align-items-center gap-3">
+
+      <!-- FIXED HERE -->
+      <a href="{{ url_for('dashboard') }}" class="btn btn-back">
+        <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+      </a>
+
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ 'danger' if category == 'danger' else 'success' }} alert-dismissible fade show rounded-4 mb-4">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="row g-5">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h3 class="card-title mb-0">
+            <i class="fas fa-search-plus me-2"></i> Launch a New Scan
+          </h3>
+          <span class="badge-purple">SecureScanX Engine</span>
+        </div>
+
+        <div class="card-body p-5">
+
+          <form method="POST" action="{{ url_for('start_scan') }}" class="space-y-5">
+
+            <div>
+              <label class="form-label">
+                <i class="fas fa-link me-2"></i> Target URL
+              </label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-globe"></i>
+                </span>
+                <input
+                  type="url"
+                  name="url"
+                  class="form-control"
+                  placeholder="https://example.com"
+                  required
+                />
+              </div>
+              <p class="mt-2 text-sm text-white/70">
+                Tip: Include <code class="bg-white/10 px-2 py-1 rounded">https://</code> for full coverage.
+              </p>
+            </div>
+
+            <div>
+              <label class="form-label mb-3">
+                <i class="fas fa-cogs me-2"></i> Scan Mode
+              </label>
+              <div class="row g-3">
+
+                <div class="col-md-4">
+                  <label class="mode-card">
+                    <input type="radio" name="mode" value="normal" checked />
+                    <div class="mode-content text-center p-3">
+                      <i class="fas fa-spider fa-2x mb-2 text-info"></i>
+                      <div class="fw-bold">Normal</div>
+                      <small class="text-white/70">ZAP Spider + Active Scan</small>
+                    </div>
+                  </label>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="mode-card">
+                    <input type="radio" name="mode" value="api" />
+                    <div class="mode-content text-center p-3">
+                      <i class="fas fa-bolt fa-2x mb-2 text-warning"></i>
+                      <div class="fw-bold">API</div>
+                      <small class="text-white/70">Fast Nuclei Templates</small>
+                    </div>
+                  </label>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="mode-card">
+                    <input type="radio" name="mode" value="deep" />
+                    <div class="mode-content text-center p-3">
+                      <i class="fas fa-layer-group fa-2x mb-2 text-success"></i>
+                      <div class="fw-bold">Deep</div>
+                      <small class="text-white/70">ZAP + Nuclei on All URLs</small>
+                    </div>
+                  </label>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="d-flex flex-column flex-sm-row gap-3 align-items-center">
+              <button type="submit" class="btn btn-scan text-white d-flex align-items-center">
+                <i class="fas fa-play me-2"></i> Start Scan
+              </button>
+              <p class="text-sm text-white/70 mb-0">
+                Scan runs in background. You’ll be redirected to status.
+              </p>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card h-100">
+        <div class="card-header">
+          <h5 class="card-title mb-0">
+            <i class="fas fa-lightbulb me-2"></i> Pro Tips
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="tip-box mb-3">
+            <strong>Normal Mode:</strong> Great for web apps with login forms.
+          </div>
+          <div class="tip-box mb-3">
+            <strong>API Mode:</strong> Fast checks for CVEs, misconfigs.
+          </div>
+          <div class="tip-box">
+            <strong>Deep Mode:</strong> Maximum coverage — ideal for large sites.
+          </div>
+          <hr class="border-white/20 my-4">
+          <p class="text-sm text-white/80">
+            <i class="fas fa-clock me-2"></i>
+            Run during off-peak hours for best performance.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% block head_meta %}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  {% endblock head_meta %}
+  <title>{% block title %}Vuln Scanner{% endblock title %}</title>
+
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Tailwind theme extension for brand purples
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50:  '#faf5ff',
+              100: '#f3e8ff',
+              200: '#e9d5ff',
+              300: '#d8b4fe',
+              400: '#c084fc',
+              500: '#a855f7', /* primary */
+              600: '#9333ea',
+              700: '#7e22ce',
+              800: '#6b21a8',
+              900: '#581c87'
+            },
+            lilac: {
+              50:  '#f8f5ff',
+              100: '#f1eaff',
+              200: '#e6d9ff',
+              300: '#d1b8ff',
+              400: '#b88bff',
+              500: '#a36eff',
+              600: '#8b54ef',
+              700: '#723fd3',
+              800: '#5e34ad',
+              900: '#4b2a8a'
+            }
+          },
+          boxShadow: {
+            brand: '0 10px 25px -5px rgba(168, 85, 247, 0.35), 0 8px 10px -6px rgba(124, 58, 237, 0.3)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Fonts (optional, clean UI) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root { color-scheme: light dark; }
+    html, body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'; }
+  </style>
+
+  {% block extra_head %}{% endblock extra_head %}
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-brand-900 via-lilac-900 to-brand-800 text-white/90">
+
+  <!-- Top nav -->
+  <nav class="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-white/5 bg-white/10 border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex h-16 items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="h-9 w-9 rounded-xl bg-gradient-to-br from-brand-500 to-lilac-500 shadow-brand grid place-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M4 6h16v2H4V6zm0 5h10v2H4v-2zm0 5h16v2H4v-2z"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-lg font-extrabold tracking-tight">Vuln Scanner</h1>
+            <p class="text-xs text-white/60 -mt-0.5">ZAP · Nuclei · Deep Coverage</p>
+          </div>
+        </div>
+
+        <div class="hidden md:flex items-center gap-2">
+          <a href="{{ url_for('index') }}"
+             class="text-sm px-3 py-2 rounded-lg hover:bg-white/10 transition">
+            Dashboard
+          </a>
+          <a href="#"
+             class="text-sm px-3 py-2 rounded-lg hover:bg-white/10 transition">
+            Docs
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header band (optional page title area) -->
+  <header class="relative">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.25),transparent_50%)]"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {% block header %}
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-extrabold">Security Scanning Console</h2>
+          <p class="text-white/70 mt-1">Run Normal (ZAP), API (Nuclei), or Deep (ZAP ➜ Nuclei) scans.</p>
+        </div>
+        <div class="hidden md:flex gap-2">
+          <span class="px-3 py-1 rounded-full text-xs bg-brand-500/20 text-brand-200 border border-brand-400/30">Purple</span>
+          <span class="px-3 py-1 rounded-full text-xs bg-lilac-500/20 text-lilac-100 border border-lilac-300/30">Lilac</span>
+        </div>
+      </div>
+      {% endblock header %}
+    </div>
+  </header>
+
+  <!-- Main content container -->
+  <main class="relative">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(124,58,237,0.18),transparent_55%)]"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="space-y-3 mb-6">
+            {% for message in messages %}
+              <div
+                x-data="{show:true}"
+                x-show="show"
+                x-transition
+                class="relative overflow-hidden rounded-xl border border-white/10 bg-white/10 backdrop-blur shadow-brand">
+                <div class="px-4 py-3 flex gap-3 items-start">
+                  <div class="h-6 w-6 rounded-md bg-gradient-to-br from-brand-500 to-lilac-500 grid place-items-center shrink-0 mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 00-.894.553L8 10v3a1 1 0 001 1h2a1 1 0 001-1v-3l-1.106-2.447A1 1 0 0010 7zm0 8a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                  <div class="text-sm leading-6">
+                    {{ message }}
+                  </div>
+                  <button type="button"
+                          class="ml-auto text-white/60 hover:text-white transition"
+                          onclick="this.closest('div[ x-data ]').style.display='none'">
+                    ✕
+                  </button>
+                </div>
+                <div class="h-1 w-full bg-white/10">
+                  <div class="h-1 bg-gradient-to-r from-brand-400 to-lilac-400 animate-[shimmer_2s_linear_infinite]"></div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <!-- Content block -->
+      <section class="relative">
+        <div class="rounded-2xl bg-white/[.06] border border-white/10 shadow-brand backdrop-blur p-5 md:p-7">
+          {% block content %}{% endblock content %}
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/10 bg-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-xs text-white/70 flex flex-col md:flex-row gap-2 md:items-center md:justify-between">
+      <p>© {{  ( (namespace()|attr('year')) if false else '' )  }} Vuln Scanner · ZAP · Nuclei</p>
+      <div class="flex gap-3">
+        <a href="{{ url_for('index') }}" class="hover:text-white">Dashboard</a>
+        <a href="#" class="hover:text-white">Privacy</a>
+        <a href="#" class="hover:text-white">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Optional: Alpine.js for simple interactivity on flash close (no build step) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  {% block scripts %}
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  {% endblock scripts %}
+
+  <!-- Tiny utility animation -->
+  <style>
+    @keyframes shimmer { from { transform: translateX(-100%);} to { transform: translateX(0%);} }
+  </style>
+</body>
+</html>

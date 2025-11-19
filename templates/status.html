@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Status #{{ scan_id }} • SecureScanX</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+    :root {
+      --purple: #6a11cb;
+      --lilac: #a855f7;
+      --blue: #55a3ff;
+      --green: #00c9a7;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--purple) 0%, var(--lilac) 35%, var(--blue) 70%, var(--green) 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      padding: 2rem 1rem;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      max-width: 1100px;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header {
+      background: rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 1.5rem 2rem;
+    }
+
+    .card-title {
+      font-size: 1.9rem;
+      font-weight: 700;
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .badge-glow {
+      font-size: 0.8rem;
+      padding: 0.4em 1em;
+      border-radius: 50px;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      box-shadow: 0 0 15px rgba(255,255,255,0.2);
+    }
+
+    .progress-container {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50px;
+      overflow: hidden;
+      height: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), var(--blue), var(--lilac));
+      border-radius: 50px;
+      width: 0%;
+      transition: width 0.6s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+      background-size: 200% 200%;
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .btn-glow {
+      background: linear-gradient(45deg, var(--green), var(--blue));
+      border: none;
+      border-radius: 14px;
+      padding: 0.7rem 1.5rem;
+      font-weight: 600;
+      color: white;
+      transition: all 0.4s ease;
+      box-shadow: 0 6px 20px rgba(0, 201, 167, 0.3);
+    }
+
+    .btn-glow:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 201, 167, 0.4);
+    }
+
+    .btn-back {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 14px;
+      padding: 0.7rem 1.5rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .finding-card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: all 0.3s ease;
+    }
+
+    .finding-card:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-3px);
+    }
+
+    .severity-badge {
+      font-size: 0.75rem;
+      padding: 0.35em 0.8em;
+      border-radius: 50px;
+      font-weight: 600;
+    }
+
+    .severity-critical { background: rgba(239, 68, 68, 0.3); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.5); }
+    .severity-high     { background: rgba(249, 115, 22, 0.3); color: #fdba74; border: 1px solid rgba(249, 115, 22, 0.5); }
+    .severity-medium   { background: rgba(251, 191, 36, 0.3); color: #fde047; border: 1px solid rgba(251, 191, 36, 0.5); }
+    .severity-low      { background: rgba(34, 197, 94, 0.3); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.5); }
+    .severity-info     { background: rgba(255, 255, 255, 0.2); color: #e0e0e0; border: 1px solid rgba(255, 255, 255, 0.3); }
+
+    .table {
+      background: transparent;
+      color: white;
+      font-size: 0.9rem;
+    }
+
+    .table th {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .table td {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .table tr:hover td {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .error-panel {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+
+    .navbar {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 2rem;
+    }
+
+    .text-muted-light {
+      color: rgba(255, 255, 255, 0.7) !important;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="{{ url_for('user.dashboard') }}">
+      SecureScanX
+    </a>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('user.dashboard') }}" class="btn btn-back">
+        Back to Dashboard
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+      <h2 class="card-title mb-1">
+        Scan Status
+      </h2>
+      <p class="text-muted-light">Real-time tracking of scan #{{ scan_id }}</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <a href="{{ url_for('user.dashboard') }}" class="btn btn-back">
+        Back
+      </a>
+      <a id="pdfLink" href="{{ url_for('report', scan_id=scan_id) }}" class="btn btn-glow d-none">
+        Download PDF
+      </a>
+    </div>
+  </div>
+
+  <!-- Mode + Status -->
+  <div class="d-flex flex-wrap gap-2 mb-4">
+    <span id="modeChip" class="badge-glow bg-white/10 border-white/15">Mode: —</span>
+    <span id="stateChip" class="badge-glow bg-white/10 border-white/15">Status: —</span>
+  </div>
+
+  <!-- Progress Card -->
+  <div class="glass-card mb-5">
+    <div class="card-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Overall Progress</h5>
+        <span id="progressPct" class="h5 mb-0">0%</span>
+      </div>
+    </div>
+    <div class="card-body p-4">
+      <div class="progress-container mb-3">
+        <div id="bar" class="progress-bar"></div>
+      </div>
+      <p id="statusText" class="mb-0 text-center text-muted-light">Queued…</p>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="resultsWrap" class="d-none space-y-4">
+
+    <!-- ZAP Card -->
+    <div id="zapCard" class="glass-card finding-card d-none">
+      <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">ZAP Findings</h5>
+          <span id="zapCount" class="text-sm text-muted-light">0 issues</span>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div id="zapEmpty" class="p-4 text-center text-muted-light d-none">
+          No ZAP vulnerabilities found.
+        </div>
+        <div class="table-responsive">
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Severity</th>
+                <th>URL</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody id="zapTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nuclei Card -->
+    <div id="nucleiCard" class="glass-card finding-card d-none">
+      <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Nuclei Findings</h5>
+          <span id="nucleiCount" class="text-sm text-muted-light">0 issues</span>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div id="nucleiEmpty" class="p-4 text-center text-muted-light d-none">
+          No Nuclei findings recorded.
+        </div>
+        <div class="table-responsive">
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th>Template</th>
+                <th>Severity</th>
+                <th>Type</th>
+                <th>Matched URL</th>
+                <th>Name</th>
+              </tr>
+            </thead>
+            <tbody id="nucleiTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Panel -->
+  <div id="errorPanel" class="error-panel d-none">
+    <div class="d-flex align-items-start gap-3">
+      <div class="flex-shrink-0">
+        <div class="h-10 w-10 rounded-lg bg-red-500/30 grid place-items-center">
+          <i class="fas fa-exclamation-triangle text-red-200"></i>
+        </div>
+      </div>
+      <div>
+        <h4 class="fw-bold text-red-200">Scan Failed</h4>
+        <p id="errorText" class="mb-0 text-sm text-red-100">Unknown error.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const scanId = {{ scan_id }};
+  const apiUrl = `/api/status/${scanId}`;
+
+  const $ = (id) => document.getElementById(id);
+  const setText = (id, text) => { const el = $(id); if (el) el.textContent = text; };
+  const show = (id) => { const el = $(id); if (el) el.classList.remove('d-none'); };
+  const hide = (id) => { const el = $(id); if (el) el.classList.add('d-none'); };
+
+  function getSeverityClass(sev) {
+    const s = (sev || '').toString().toLowerCase();
+    if (['critical', 'high', '3', '2'].includes(s)) return 'severity-critical';
+    if (['medium', '1'].includes(s)) return 'severity-medium';
+    if (['low', '0'].includes(s)) return 'severity-low';
+    return 'severity-info';
+  }
+
+  function truncate(str, n = 60) {
+    return str && str.length > n ? str.slice(0, n - 1) + '…' : (str || '—');
+  }
+
+  function renderZAP(zap) {
+    if (!zap || zap.length === 0) {
+      show('zapCard'); show('zapEmpty'); setText('zapCount', '0 issues'); return;
+    }
+    show('zapCard'); hide('zapEmpty');
+    setText('zapCount', `${zap.length} issue${zap.length > 1 ? 's' : ''}`);
+    const tbody = $('zapTbody');
+    tbody.innerHTML = '';
+    zap.forEach(a => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="py-3 px-4">${truncate(a.type, 50)}</td>
+        <td class="py-3 px-4"><span class="severity-badge ${getSeverityClass(a.severity)}">${a.severity || '—'}</span></td>
+        <td class="py-3 px-4"><div class="text-truncate" style="max-width: 300px;" title="${a.url || ''}">${truncate(a.url, 50)}</div></td>
+        <td class="py-3 px-4">${truncate(a.description, 80)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderNuclei(nu) {
+    if (!nu || nu.length === 0) {
+      show('nucleiCard'); show('nucleiEmpty'); setText('nucleiCount', '0 issues'); return;
+    }
+    show('nucleiCard'); hide('nucleiEmpty');
+    setText('nucleiCount', `${nu.length} issue${nu.length > 1 ? 's' : ''}`);
+    const tbody = $('nucleiTbody');
+    tbody.innerHTML = '';
+    nu.forEach(r => {
+      const tr = document.createElement('tr');
+      const sev = (r.severity || '').toString().toLowerCase();
+      tr.innerHTML = `
+        <td class="py-3 px-4">${truncate(r.template, 40)}</td>
+        <td class="py-3 px-4"><span class="severity-badge ${getSeverityClass(sev)}">${sev || '—'}</span></td>
+        <td class="py-3 px-4">${truncate(r.type, 30)}</td>
+        <td class="py-3 px-4"><div class="text-truncate" style="max-width: 300px;" title="${r.matched || ''}">${truncate(r.matched, 50)}</div></td>
+        <td class="py-3 px-4">${truncate(r.name, 50)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function applyModeChip(mode) {
+    const chip = $('modeChip');
+    const text = `Mode: ${mode || '—'}`;
+    chip.textContent = text;
+    chip.className = 'badge-glow ' + (
+      mode === 'normal' ? 'bg-gradient-to-r from-green-500/20 to-blue-500/20 text-white border-white/20' :
+      mode === 'api' ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-white border-white/20' :
+      mode === 'deep' ? 'bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 text-white border-white/20' :
+      'bg-white/10 text-white/80 border-white/15'
+    );
+  }
+
+  function applyStateChip(state) {
+    const chip = $('stateChip');
+    chip.textContent = `Status: ${state || '—'}`;
+    chip.className = 'badge-glow ' + (
+      state === 'running' ? 'bg-yellow-500/20 text-yellow-100 border-yellow-400/30' :
+      state === 'done' ? 'bg-emerald-500/20 text-emerald-100 border-emerald-400/30' :
+      state === 'queued' ? 'bg-white/10 text-white/80 border-white/15' :
+      state === 'error' ? 'bg-red-500/20 text-red-100 border-red-400/30' :
+      'bg-white/10 text-white/80 border-white/15'
+    );
+  }
+
+  function updateStatus() {
+    fetch(apiUrl)
+      .then(res => res.json())
+      .then(data => {
+        const progress = Math.max(0, Math.min(100, Math.round(data.progress || 0)));
+        $('bar').style.width = progress + '%';
+        setText('progressPct', progress + '%');
+        setText('statusText', `${(data.status || 'unknown').toUpperCase()} · ${progress}%`);
+        applyStateChip(data.status);
+        applyModeChip(data.mode);
+
+        if (data.results) {
+          show('resultsWrap');
+          if (data.results.zap !== undefined) renderZAP(data.results.zap);
+          if (data.results.nuclei !== undefined) renderNuclei(data.results.nuclei);
+        }
+
+        if (data.status === 'error') {
+          show('errorPanel');
+          setText('errorText', data.error || 'Unknown error');
+        } else {
+          hide('errorPanel');
+        }
+
+        if (data.status === 'done') {
+          $('pdfLink')?.classList.remove('d-none');
+        }
+      })
+      .catch(() => {
+        show('errorPanel');
+        setText('errorText', 'Failed to connect. Retrying...');
+      });
+  }
+
+  updateStatus();
+  const timer = setInterval(updateStatus, 4000);
+  window.addEventListener('beforeunload', () => clearInterval(timer));
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
